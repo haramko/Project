@@ -1,0 +1,124 @@
+# Project
+import psycopg2
+import urllib
+from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+from SocketServer import ThreadingMixIn
+import threading
+import argparse
+import json
+
+
+class LocalData(object):
+        records= {}
+class MyHandler(BaseHTTPRequestHandler):
+
+    myID = 10
+    device_id = 0
+        self.send_response(200)
+        self.send_header('Content-type','text/html')
+        self.end_headers()
+    def do_GET(self):
+        try:
+            self._set_headers()
+
+            #params = urllib.urlencode({'temperature':10})
+            #self.wfile.write(params)
+            if None != re.search('/device_id/*', self.path):
+                self.deviceID = self.path.split('/')[-1]
+                #if LocalData.records.has_key(deviceID):
+                print self.deviceID
+                #self.wfile.write(LocalData.records[deviceID])
+                self.read_db(self.deviceID)
+
+                try:
+                    conn.autocommit = True
+                except:
+                    print "not connect"
+
+                cur=conn.cursor()
+                try:
+                    params = []
+                    i=0
+                    print self.deviceID
+                    rows = cur.fetchall()
+                    print rows
+                    for row in rows:
+                    self.wfile.write(params)
+                    print params
+                except psycopg2.DatabaseError as error:
+                    print error
+                    #print "cannot SQL Execute"
+
+                conn.commit()
+                cur.close()
+                conn.close()
+
+            self.send_error(404, 'File Not Found')
+
+        if None != re.search('/session_number/*', self.path):
+                self.device_id= self.path.split('/')[-1]
+                print self.device_id
+        print "in post method"
+        data_string = self.rfile.read(int(self.headers['Content-Length']))
+        print "in post action: " + data_string
+        self.insert_db(data_string)
+
+
+    def insert_db(self, data_x):
+        try:
+            conn.autocommit = True
+            print 1
+        except:
+            print "not connect"
+
+        cur=conn.cursor()
+        data_x = str(data_x)
+        print "data_x is " + data_x
+        self.myID = self.myID + 1
+        try:
+            #myID = 10
+            #print "myID is"+myID
+            print 2
+
+        except psycopg2.DatabaseError as error:
+            #print "cannot SQL Execute"
+            print error
+
+        conn.commit()
+        cur.close()
+        conn.close()
+
+    def read_db(self, device_id):
+        try:
+            conn.autocommit = True
+        except:
+            print "not connect"
+
+        cur=conn.cursor()
+        try:
+            print device_id
+            # sqlString = "SELECT Device_Name FROM Devices WHERE id=%s"
+            #sqlString = "SELECT Device_Name FROM Devices"
+            cur.execute("SELECT Device_Name FROM Device_Profile WHERE id=%s",(device_id,))
+            x = cur.fetchone()[0]
+            #print x, type(x), repr(x)
+            print x
+        except psycopg2.DatabaseError as error:
+            #print "cannot SQL Execute"
+            print error
+
+        conn.commit()
+        cur.close()
+        conn.close()
+
+
+def main():
+        try:
+                server = HTTPServer(('',30004), MyHandler)
+                print 'Welcome to the machine'
+                server.serve_forever()
+        except KeyboardInterrupt:
+                server.socket.close()
+
+if __name__== '__main__':
+        main()
