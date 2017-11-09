@@ -1,0 +1,213 @@
+﻿import sys
+import pymongo
+import arrow
+import requests
+import json
+import time
+import serial 
+ 
+def try_float(s):
+    try:
+        return float(s)
+    except:
+        return int(s)
+ser=serial.Serial("/dev/ttyACM0",9600)
+ser.flushInput()
+ 
+ 
+print "sensor"
+temperature = 0
+headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/plain"}
+ 
+# url = "http://192.168.100.181:30005/device_id/" + "1"
+url = "http://192.168.100.181:30005/device_id/"
+url2 = "http://192.168.100.181:30005/session_number/"
+ 
+while True:
+    i = 0
+    values = []
+ 
+    response = requests.get(url).json()
+    Device_ID = str(response['Device_ID'])
+    Evaluation = str(response['Evaluation'])
+    NSamplingTrial = response['NSamplingTrial']
+    SamplingInterval = response['SamplingInterval']
+ 
+    numSensor = str(response['numSensor'])
+    numInput = str(response['numInput'])
+    numOutput = str(response['numOutput'])
+ 
+    inOut = str(response['inout'])
+    anadig = str(response['anadig'])
+    sensor = str(response['sensor'])
+    ledNum = str(response['ledNum'])
+    ledTime = str(response['ledTime'])
+    ledValue = str(response['ledValue'])
+    turnNumber = str(response['turnNumber'])
+    turnSpeed = str(response['turnSpeed'])
+    turnDirection = str(response['turnDirection'])
+    pin00 = str(response['pin00'])
+    pin01 = str(response['pin01'])
+    pin02 = str(response['pin02'])
+    pin03 = str(response['pin03'])
+    pin04 = str(response['pin04'])
+    pin05 = str(response['pin05'])
+    pin06 = str(response['pin06'])
+    pin07 = str(response['pin07'])
+ 
+    inOut1 = str(response['inout1'])
+    anadig1 = str(response['anadig1'])
+    sensor1 = str(response['sensor1'])
+    ledNum1 = str(response['ledNum1'])
+    ledTime1 = str(response['ledTime1'])
+    ledValue1 = str(response['ledValue1'])
+    turnNumber1 = str(response['turnNumber1'])
+    turnSpeed1 = str(response['turnSpeed1'])
+    turnDirection1 = str(response['turnDirection1'])
+    pin10 = str(response['pin10'])
+    pin11 = str(response['pin11'])
+    pin12 = str(response['pin12'])
+    pin13 = str(response['pin13'])
+    pin14 = str(response['pin14'])
+    pin15 = str(response['pin15'])
+    pin16 = str(response['pin16'])
+    pin17 = str(response['pin17'])
+ 
+    print Evaluation
+    Evaluation = str(Evaluation)
+    print type(Evaluation)
+ 
+    send = numSensor + " "
+ 
+
+
+
+    if int(numSensor)==1:
+        send = send + inOut + " " + anadig + " " + sensor + " "
+        
+	if int(inOut) == 1 and int(anadig) == 1 and int(sensor) == 0:
+            send = send + ledNum + " " + ledTime + " "
+ 
+        if int(inOut) == 1 and int(anadig) == 1 and int(sensor) == 1:
+            send = send + ledValue + " “
+
+	if int(inOut) == 1 and int(anadig) == 1 and int(sensor) == 2:
+            send = send + turnNumber + " “ + turnSpeed + " “ + turnDirection + " “
+ 
+        send = send + pin00 + " " + pin01 + " " + pin02 + " " + pin03 + " " + pin04 + pin05 + " " + pin06 + " " + pin07
+ 
+    if int(numSensor)==2:
+ 
+ 
+        send = numInput + " " + numOutput + " "
+ 
+        if int(numInput) == 2 and int(numOutput) == 0:
+            send = send + 0 + " " + anadig + " " + sensor + " " + pin00 + " "+ pin01 + " " + pin02 + " " + pin03 + " " + pin04 + pin05 + " " + pin06 + " " + pin07 + “ ”
+ 
+            send = send + inOut1 + " " + anadig1 + " " + sensor1 + " " + pin10 + " " + pin11 + " " + pin12 + " " + pin13 + " " + pin14 + pin15 + " " + pin16 + " " + pin17
+ 
+ 
+        if int(numInput) == 1 and int(numOutput) == 1:
+            send = send + inOut + " " + anadig + " " + sensor + " "
+ 
+            if int(inOut) == 1 and int(anadig) == 1 and int(sensor) == 0:
+                send = send + ledNum + " " + ledTime + " "
+ 
+
+
+
+
+            if int(inOut) == 1 and int(anadig) == 1 and int(sensor) == 1:
+                send = send + ledValue + " “
+
+	    if int(inOut) == 1 and int(anadig) == 1 and int(sensor) == 2:
+                send = send + turnNumber + " “ + turnSpeed + " “ + turnDirection + " “
+ 
+                
+            send = send + pin00 + " " + pin01 + " " + pin02 + " " + pin03 + " " + pin04 + " " + pin05 + " " + pin06 + " " + pin07 + “ ”
+ 
+            send = send + inOut1 + " " + anadig1 + " " + sensor1 + " "
+ 
+            if int(inOut1) == 1 and int(anadig1) == 1 and int(sensor1) == 0:
+                send = send + ledNum1 + " " + ledTime1 + " "
+ 
+            if int(inOut1) == 1 and int(anadig1) == 1 and int(sensor1) == 1:
+                send = send + ledValue1 + " “
+
+	    if int(inOut1) == 1 and int(anadig1) == 1 and int(sensor1) == 2:
+                send = send + turnNumber1 + " “ + turnSpeed1 + " “ + turnDirection1 + " “
+ 
+ 
+            send = send + pin10 + " " + pin11 + " " + pin12 + " " + pin13 + " " + pin14 + " " + pin15 + " " + pin16 + " " + pin17 + “ ”
+ 
+ 
+        if int(numInput) == 0 and int(numOutput) == 2:
+            send = send + 1 + " " + anadig + " " + sensor + " "
+ 
+            if int(inOut) == 1 and int(anadig) == 1 and int(sensor) == 0:
+                send = send + ledTime + " "
+ 
+            if int(inOut) == 1 and int(anadig) == 1 and int(sensor) == 1:
+                send = send + ledNum + " " + ledValue + " “
+
+
+
+
+
+	    if int(inOut) == 1 and int(anadig) == 1 and int(sensor) == 2:
+                send = send + turnNumber + " “ + turnSpeed + " “ + turnDirection + " “
+ 
+            send = send + + pin00 + " " + pin01 + " " + pin02 + " " + pin03 + " " + pin04 + " " + pin05 + " " + pin06 + " " + pin07 + “ ”
+ 
+            send = send + inOut1 + " " + anadig1 + " " + sensor1 + " "
+ 
+            if int(inOut1) == 1 and int(anadig1) == 1 and int(sensor1) == 0:
+                send = send + ledNum1 + " " + ledTime1 + " "
+ 
+            if int(inOut1) == 1 and int(anadig1) == 1 and int(sensor1) == 1:
+                send = send + ledValue1 + " “
+
+	    if int(inOut1) == 1 and int(anadig1) == 1 and int(sensor1) == 2:
+                send = send + turnNumber1 + " “ + turnSpeed1 + " “ + turnDirection1 + " “
+ 
+            send = send + pin10 + " " + pin11 + " " + pin12 + " " + pin13 + " " + pin14 + " " + pin15 + " " + pin16 + " " + pin17
+ 
+ 
+ 
+ 
+    print "send:" + send
+    print type(send)
+ 
+    while True:
+	print "device id is " + Device_ID
+	ser.write(send)
+	vals = ser.readline()
+	print vals
+	#vals = try_float(vals)
+	#print vals
+	print type(vals)
+	
+	vals = str(vals)
+	vals = vals.rstrip()
+	cel = eval(vals + Evaluation)
+	print 'cel = ' + str(cel)
+	values.insert(i, cel)
+	print values
+	i += 1
+	
+	NSamplingTrial -= 1
+	if NSamplingTrial == 0:
+		break
+ 
+	print values
+	
+	print "end"
+ 
+res = requests.post(url2, data=json.dumps(values))	
+		
+	'''
+	try:
+		time.sleep(0.5)
+	except:
+        	print("insert failed")
+	'''
