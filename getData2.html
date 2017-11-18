@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+<script type="text/javascript" src="smoothie.js">
+</script>
+
+<style>
+  p{
+        font-size:5rem;
+        font-haamily: arial;
+        border:5px solid black;
+        padding:20px;
+        margin:auto;
+  }
+</style>
+
+</head>
+
+
+
+<script>
+
+var val=0;
+        function getValSound(){
+                $.getJSON('http://192.168.100.181/haram/getdbprint.php',function(data){
+                val=data.One;
+                });
+                return val;
+        }
+var soundVal=0;
+soundVal=getValSound();
